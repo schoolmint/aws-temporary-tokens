@@ -22,7 +22,7 @@ if __name__ == "__main__":
     parser.add_argument('-c', '--mfa_code', type=str, required=True, help=command_mfa_help)
     parser.add_argument('-d', '--mfa_device', type=str, required=False, help=command_mfa_arn_help, default='None')
     parser.add_argument('-t', '--time', type=str, required=False, help=command_time_help, default='28800')
-    parser.add_argument('-p', '--profile', type=str, required=False, help=command_profile_help, default='default')
+    parser.add_argument('-p', '--profile', type=str, required=False, help=command_profile_help, default='None')
     # ARGPARSE OBJECT
     args = parser.parse_args()
     # OPEN CONFIGURATION FILE IF NO MFA_DEVICE ON ARGUMENTS
@@ -35,15 +35,21 @@ if __name__ == "__main__":
             print(f'There was an error trying to load the local configuration file. Please confirm the file exist or json syntax is correct.')
             sys.exit(1)
         # Look for specified profile
-        mfa_device = conf_data[f'{args.profile}'][0]['arn_device']
+        mfa_device = if args.profile == 'None' then conf_data['default'][0]['arn_device'] else conf_data[f'{args.profile}'][0]['arn_device']
     else:
         mfa_device = args.mfa_device
     # Execute sts commands
-    sts_command = f"sts get-session-token \
-                    --duration-seconds {args.time} \
-                    --serial-number {mfa_device} \
-                    --token-code {args.mfa_code} \
-                    --profile {args.profile}"
+    if args.profile == 'None':
+        sts_command = f"sts get-session-token \
+                        --duration-seconds {args.time} \
+                        --serial-number {mfa_device} \
+                        --token-code {args.mfa_code}"
+    else:
+        sts_command = f"sts get-session-token \
+                        --duration-seconds {args.time} \
+                        --serial-number {mfa_device} \
+                        --token-code {args.mfa_code} \
+                        --profile {args.profile}"
     try:
         sts_output = subprocess.run("aws " + f"{sts_command}", shell=True, capture_output=True, text=True).stdout
     except Exception as e:
