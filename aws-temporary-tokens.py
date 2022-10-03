@@ -55,7 +55,7 @@ if __name__ == "__main__":
                         --profile {args.profile}"
     try:
         print("[+] Executing STS command with given arguments.")
-        sts_output = subprocess.run("aws " + f"{sts_command}", shell=True, capture_output=True, text=True).stdout
+        sts_output = subprocess.run("aws " + f"{sts_command}", shell=True, capture_output=True, text=True, check=True).stdout
     except Exception as e:
         print(f"[-] There was an error executing STS command: {e}")
         sys.exit(1)
