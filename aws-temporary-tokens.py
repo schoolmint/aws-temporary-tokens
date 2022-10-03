@@ -25,11 +25,14 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--profile', type=str, required=False, help=command_profile_help, default='default')
     # ARGPARSE OBJECT
     args = parser.parse_args()
+    print("[+] Parsing object for given arguments")
     # OPEN CONFIGURATION FILE IF NO MFA_DEVICE ON ARGUMENTS
     if args.mfa_device == 'None':
         configuration_file = str(Path.home()) + "/.aws_temporary_tokens.json"
+        print(f"[+] MFA not passed as argument. Opening {configuration_file}.")
         try:
             with open(configuration_file) as conf:
+                print(f"[+] Loading configuration data for profile {args.profile}") 
                 conf_data = json.load(conf)
         except Exception:
             print(f'There was an error trying to load the local configuration file. Please confirm the file exist or json syntax is correct.')
