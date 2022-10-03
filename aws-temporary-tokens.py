@@ -32,10 +32,10 @@ if __name__ == "__main__":
         print(f"[+] MFA not passed as argument. Opening {configuration_file}.")
         try:
             with open(configuration_file) as conf:
-                print(f"[+] Loading configuration data for profile {args.profile}") 
+                print(f"[+] Loading configuration data for profile {args.profile}")
                 conf_data = json.load(conf)
         except Exception:
-            print(f'There was an error trying to load the local configuration file. Please confirm the file exist or json syntax is correct.')
+            print(f"[-] There was an error trying to load the local configuration file. Please confirm the file exist or json syntax is correct.")
             sys.exit(1)
         # Look for specified profile
         mfa_device = conf_data['default'][0]['arn_device'] if args.profile == 'default' else conf_data[f'{args.profile}'][0]['arn_device']
