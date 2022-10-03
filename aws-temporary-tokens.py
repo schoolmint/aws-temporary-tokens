@@ -57,7 +57,7 @@ if __name__ == "__main__":
         print("[+] Executing STS command with given arguments.")
         sts_output = subprocess.run("aws " + f"{sts_command}", shell=True, capture_output=True, text=True).stdout
     except Exception as e:
-    print(f"[-] There was an error executing STS command: {e}")
+        print(f"[-] There was an error executing STS command: {e}")
         sys.exit(1)
     # GETTING NEW GENERATED CREDENTIALS
     temporal_access = json.loads(sts_output)
