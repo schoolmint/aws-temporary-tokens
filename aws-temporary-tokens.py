@@ -17,12 +17,14 @@ if __name__ == "__main__":
     command_mfa_arn_help = "AWS ARN for your (virtual)device"
     command_time_help = "Time in seconds before the new token expires. (Min)900s - (Max)129600s"
     command_profile_help = "AWS Profile that you want to use from your ars credentials file"
+    command_region_help = "AWS Region that you want to use as default like 'us-west-2'"
     # ARGPARSE ARGUMENTS
     parser = ArgumentParser(description=command_description)
     parser.add_argument('-c', '--mfa_code', type=str, required=True, help=command_mfa_help)
     parser.add_argument('-d', '--mfa_device', type=str, required=False, help=command_mfa_arn_help, default='None')
     parser.add_argument('-t', '--time', type=str, required=False, help=command_time_help, default='28800')
     parser.add_argument('-p', '--profile', type=str, required=False, help=command_profile_help, default='default')
+    parser.add_argument('-r', '--region', type=str, required=False, help=command_region_help, default='us-west-2')
     # ARGPARSE OBJECT
     args = parser.parse_args()
     print("[+] Parsing object for given arguments")
@@ -68,7 +70,8 @@ if __name__ == "__main__":
     # OPEN A NEW TERMINAL WITH TEMPORARY CREDENTIALS
     export_script = f"export AWS_ACCESS_KEY_ID={temporal_access_key} \
                         && export AWS_SECRET_ACCESS_KEY={temporal_secret_key} \
-                        && export AWS_SESSION_TOKEN={temporal_session_token}"
+                        && export AWS_SESSION_TOKEN={temporal_session_token} \
+                        && export AWS_DEFAULT_REGION={args.region}"
     if sys.platform == 'darwin':
         terminal_command = f"/usr/bin/osascript -e 'tell application \"Terminal\" to do script \"{export_script}\"'"
         subprocess.run(terminal_command, shell=True)
